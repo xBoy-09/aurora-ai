@@ -1,6 +1,6 @@
-from core.gpt import gpt_public_assistant_functions as gpt
-from core.gpt import helper_variables as helper
-from core.gpt.gpt_tool_functions import GptToolFunctions
+from app.backend_DDD.core.gpt import gpt_public_assistant_functions as gpt
+from app.backend_DDD.core.gpt import helper_variables as helper
+from app.backend_DDD.core.gpt.gpt_tool_functions import GptToolFunctions
 
 class GptAssistant:
     def __init__(self):

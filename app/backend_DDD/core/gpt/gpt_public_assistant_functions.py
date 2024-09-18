@@ -3,8 +3,8 @@ import json
 import openai
 import logging
 from datetime import datetime
-from core.gpt.helper_variables import *
-from core.gpt.gpt_tool_functions import GptToolFunctions
+from app.backend_DDD.core.gpt.helper_variables import *
+from app.backend_DDD.core.gpt.gpt_tool_functions import GptToolFunctions
 from dotenv import load_dotenv, find_dotenv
 
 load_dotenv()
