@@ -10,7 +10,7 @@ import os
 app = Flask(__name__)
 
 # Create the Blueprint
-ai_app = Blueprint("ai_app", __name__, url_prefix="/api/v1")
+# ai_app = Blueprint("ai_app", __name__, url_prefix="/api/v1")
 gpt_assistant = GptAssistant()
 
 # Define a route within the Blueprint
@@ -46,7 +46,7 @@ def gpt_public_query():
     ).__dict__
 
 # Register the Blueprint with the Flask app
-app.register_blueprint(ai_app)
+# app.register_blueprint(ai_app)
 
 if __name__ == '__main__':
     # Heroku assigns the port dynamically, and it's available in the environment variable PORT
