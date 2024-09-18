@@ -14,7 +14,7 @@ app = Flask(__name__)
 gpt_assistant = GptAssistant()
 
 # Define a route within the Blueprint
-@ai_app.route("/test", methods=["GET"])
+@app.route("/test", methods=["GET"])
 def test():
     return utils.Response(
         message="Test Response",
@@ -28,7 +28,7 @@ def test():
         "query": schemas.QuerySchema,
     }
 )
-@ai_app.route("/gpt-public-query", methods=["POST"])
+@app.route("/gpt-public-query", methods=["POST"])
 def gpt_public_query():
     query = request.get_json(force=True)["query"]
 
