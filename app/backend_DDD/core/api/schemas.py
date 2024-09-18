@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
-from core.api import utils
+import utils
 
 
 @dataclass()
