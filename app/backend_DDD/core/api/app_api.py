@@ -50,6 +50,5 @@ def gpt_public_query():
 
 if __name__ == '__main__':
     # Heroku assigns the port dynamically, and it's available in the environment variable PORT
-    # port = int(os.environ.get('PORT', 5000))  # Fallback to 5000 if PORT isn't set
-    # app.run(host='0.0.0.0', port=port)
-    app.run()
+    port = int(os.environ.get('PORT', 5000))  # Fallback to 5000 if PORT isn't set
+    app.run(host='0.0.0.0', port=port)
