@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
-import utils
+import app.backend_DDD.core.api.utils as utils
 
 
 @dataclass()

@@ -7,7 +7,7 @@ from functools import wraps
 from typing import Dict, List, Optional, Union
 from uuid import NAMESPACE_OID, uuid5
 from flask import request
-from event_codes import EventCode
+from app.backend_DDD.core.api.event_codes import EventCode
 
 
 @dataclass(frozen=True)

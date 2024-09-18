@@ -1,8 +1,9 @@
 import logging
 from flask import Blueprint, Flask, request, jsonify
-import utils
-import schemas
 from app.backend_DDD.core.gpt.gpt_assistant_functions import GptAssistant
+import app.backend_DDD.core.api.utils as utils
+import app.backend_DDD.core.api.schemas as schemas
+import os
 
 
 # Initialize the Flask application
@@ -47,6 +48,7 @@ def gpt_public_query():
 # Register the Blueprint with the Flask app
 app.register_blueprint(ai_app)
 
-# Run the server locally
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Heroku assigns the port dynamically, and it's available in the environment variable PORT
+    port = int(os.environ.get('PORT', 5000))  # Fallback to 5000 if PORT isn't set
+    app.run(host='0.0.0.0', port=port)
