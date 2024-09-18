@@ -2,7 +2,8 @@ import logging
 from flask import Blueprint, Flask, request, jsonify
 import utils
 import schemas
-from gpt.gpt_assistant_functions import GptAssistant
+from ...core.gpt.gpt_assistant_functions import GptAssistant
+
 
 # Initialize the Flask application
 app = Flask(__name__)
