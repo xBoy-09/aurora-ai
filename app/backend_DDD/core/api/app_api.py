@@ -14,7 +14,7 @@ ai_app = Blueprint("ai_app", __name__, url_prefix="/api/v1")
 gpt_assistant = GptAssistant()
 
 
-@ai_app.route("/", methods=["GET"])
+@app.route("/", methods=["GET"])
 def initFunction():
     return "App is running"
 
