@@ -13,6 +13,11 @@ app = Flask(__name__)
 ai_app = Blueprint("ai_app", __name__, url_prefix="/api/v1")
 gpt_assistant = GptAssistant()
 
+
+@ai_app.route("/", methods=["GET"])
+def initFunction():
+    return "App is running"
+
 # Define a route within the Blueprint
 @ai_app.route("/test", methods=["GET"])
 def test():
