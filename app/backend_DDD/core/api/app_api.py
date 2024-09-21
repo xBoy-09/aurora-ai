@@ -35,20 +35,25 @@ def test():
 )
 @ai_app.route("/gpt-public-query", methods=["POST"])
 def gpt_public_query():
-    query = request.get_json(force=True)["query"]
+    try:
+        query = request.get_json(force=True)["query"]
 
-    # Process the query
-    response, image, link = gpt_assistant.process_public_query(query)
+        # Process the query
+        response = gpt_assistant.run_type_one(query=query)
 
-    return utils.Response(
-        message="Query processed successfully",
-        status_code=200,
-        data= {
-            "response": response,
-            "image": image,
-            "link" : link,
-        },
-    ).__dict__
+        return utils.Response(
+            message="Query processed successfully",
+            status_code=200,
+            data= {
+                "response": response,
+            },
+        ).__dict__
+    except Exception as e:
+        print(f'Error in gpt_public_query: {e}')
+        return utils.Response(
+            message=f"An error occurred in server",
+            status_code=500,
+        ).__dict__
 
 # Register the Blueprint with the Flask app
 app.register_blueprint(ai_app)

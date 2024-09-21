@@ -1,1 +1,2 @@
-app/backend_DDD/core/gpt/.env
+.env
+**/__pycache__/
