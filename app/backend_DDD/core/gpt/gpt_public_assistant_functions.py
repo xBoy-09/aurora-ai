@@ -121,7 +121,7 @@ class Run:
                 print(f"Waiting for run {run.id} to complete...", run.status)
                 if run.status == 'requires_action':
                     tool_calls = run.required_action.submit_tool_outputs.tool_calls
-                    tool_outputs = ToolCalls.call_tool_actions(self.client, thread_id, run_id, tool_calls)
+                    tool_outputs = ToolCalls.call_tool_actions(tool_calls)
                     ToolCalls.submit_tool_outputs_to_run(tool_outputs, self.client, thread_id, run_id)
 
                 if run.completed_at:
@@ -135,7 +135,7 @@ class Run:
             except Exception as e:
                 logging.error(f"An error occurred while retrieving the run: {e}")
                 break
-            time.sleep(sleep_interval)
+            # time.sleep(sleep_interval)
 
 
 class ToolCalls:
