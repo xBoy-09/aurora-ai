@@ -101,11 +101,14 @@ class Run:
             try:
                 run = self.client.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run_id)
                 print("Waiting for run to retrieve function...", run.status)
+                if run.status == 'incomplete':
+                    print(f'Run incomplete : {run.incomplete_details}')
+                    return None
                 if run.status == 'failed':
                     print('Run failed with error:', run.last_error)
                     return None
                 if run.required_action:
-                    print('Run requires action. Retrieving tool calls...')
+                    print(f'Run requires action. \n {run.required_action} \nRetrieving tool calls...')
                     return run.required_action.submit_tool_outputs.tool_calls
                 elif run.status == 'completed':
                     return None

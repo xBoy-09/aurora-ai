@@ -37,11 +37,11 @@ class GptAssistant:
 
 
         #== Cancel old runs if any ==#
-        self.run.cancel_old_runs(thread_id=helper.public_thread_id)
+        self.run.cancel_old_runs(thread_id=id.lums_public_thread_id)
         print('Cancelled old runs')
 
         #== Create a message in thread ==#
-        query_message = self.thread.create_message(helper.public_thread_id, 'user', query)
+        query_message = self.thread.create_message(id.lums_public_thread_id, 'user', query)
 
         #== Create a run in that thread ==#
         query_run = self.run.create_run(assistant_id=id.lums_public_assitant_id, thread_id=id.lums_public_thread_id, parallel_functions=True)
