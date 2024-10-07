@@ -1,3 +1,4 @@
 .env
 **/__pycache__/
 dummy.txt
+app/backend_DDD/core/api/credentials-dev.json

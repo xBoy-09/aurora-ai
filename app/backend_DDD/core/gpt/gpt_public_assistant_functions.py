@@ -73,6 +73,9 @@ class Thread:
 
     def retrieve_thread(self, thread_id: str):
         return self.client.beta.threads.retrieve(thread_id=thread_id)
+    
+    def get_thread_messages(self, thread_id: str):
+        return self.client.beta.threads.messages.list(thread_id=thread_id)
 
 
 class Run:

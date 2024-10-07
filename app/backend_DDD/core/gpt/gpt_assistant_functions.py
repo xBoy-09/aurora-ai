@@ -11,6 +11,33 @@ class GptAssistant:
         self.asist = Assistant(client=client)
         pass
 
+
+    def get_thread_messages(self, thread_id):
+        messages = self.thread.get_thread_messages(thread_id=thread_id).model_dump()
+        messages_data  = messages["data"]
+        msg_list = []
+        length = len(messages_data)
+        temp = 0
+        while temp+1 < length:
+            user_message = messages_data[temp+1]
+            assistant_message = messages_data[temp]
+            if user_message["role"] == "user" and assistant_message["role"] == "assistant":
+                if user_message["incomplete_details"] == None and assistant_message["incomplete_details"] == None:
+                    msg_list.append({
+                        "user": messages_data[temp+1]["content"],
+                        "assistant": messages_data[temp]["content"]
+                    })
+                temp += 2
+            else:
+                temp += 1
+
+        return {
+            "messages": msg_list,
+            "last_id": messages["last_id"],
+            "has_more": messages["has_more"]
+        }
+
+
     def process_public_query(self, query):
         
         #== Create a message ==#
