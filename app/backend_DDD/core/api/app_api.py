@@ -1,6 +1,8 @@
 import os
+import json
 import logging
 import firebase_admin
+from firebase_admin import auth
 import app.backend_DDD.core.api.utils as utils
 import app.backend_DDD.core.api.schemas as schemas
 from flask import Blueprint, Flask, request, jsonify
@@ -17,12 +19,21 @@ app = Flask(__name__)
 ai_app = Blueprint("ai_app", __name__, url_prefix="/api/v1")
 gpt_assistant = GptAssistant()
 database = DatabaseManager()
-cred = firebase_admin.credentials.Certificate("app/backend_DDD/core/api/credentials-dev.json")
+# cred = firebase_admin.credentials.Certificate("app/backend_DDD/core/api/credentials-dev.json")
+cred_json = os.environ.get('FIREBASE_CREDENTIALS')
+cred = firebase_admin.credentials.Certificate(json.loads(cred_json))
+# print(type(cred))
 firebase_admin.initialize_app(cred)
+# check if firebase_admin is initialized
+
 
 
 @app.route("/", methods=["GET"])
 def initFunction():
+    users = auth.list_users(
+        max_results=10,
+    )
+    print(f'Users: {users}')
     return "App is running"
 
 # Define a route within the Blueprint
