@@ -6,8 +6,9 @@ from dataclasses import dataclass
 from functools import wraps
 from typing import Dict, List, Optional, Union
 from uuid import NAMESPACE_OID, uuid5
-from flask import request
+from flask import request , jsonify
 from app.backend_DDD.core.api.event_codes import EventCode
+from app.backend_DDD.core.database.database_api_queries import DatabaseManager as db_man
 
 
 @dataclass(frozen=True)
@@ -24,6 +25,41 @@ class CustomException(Exception):
     message: str = "An error occurred"
     status_code: int = 400
     event_code: EventCode = EventCode.DEFAULT_EVENT
+
+
+
+def require_admin(database):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            try:
+                user_id = request.get_json(force=True).get("user_id")
+                if not user_id:
+                    return jsonify({
+                        "message": "User ID is missing.",
+                        "status_code": 400
+                    })
+
+                # Check if the user is an admin
+                user = database.get_user(user_id)
+                if not user or user.get('user_type') != 'admin':
+                    return jsonify({
+                        "message": "Access denied. Admin privileges are required.",
+                        "status_code": 403
+                    })
+
+                return f(*args, **kwargs)
+            except Exception as e:
+                print(f"Error in require_admin: {e}")
+                return jsonify({
+                    "message": "An error occurred in server.",
+                    "status_code": 500
+                })
+
+        return decorated_function
+    return decorator
+
+
 
 def handle_missing_payload(func):
     @wraps(func)
