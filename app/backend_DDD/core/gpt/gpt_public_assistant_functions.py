@@ -28,6 +28,9 @@ class Assistant:
         return self.client.beta.assistants.retrieve(
             assistant_id=assistant_id,
         )
+    
+    def get_file_name(self, file_id: str) -> str:
+        return self.client.files.retrieve(file_id=file_id).filename
 
     def update_assistant(self, assistant_id: str, instruction=None, tools=None):
         kwargs = {'assistant_id': assistant_id}
@@ -76,6 +79,9 @@ class Thread:
     
     def get_thread_messages(self, thread_id: str):
         return self.client.beta.threads.messages.list(thread_id=thread_id)
+    
+    def delete_thread(self, thread_id: str):
+        return self.client.beta.threads.delete(thread_id=thread_id)
 
 
 class Run:
@@ -136,7 +142,7 @@ class Run:
                     print(f"Run completed in {formatted_time}")
                     messages = self.client.beta.threads.messages.list(thread_id=thread_id)
                     last_message = messages.data[0]
-                    response = last_message.content[0].text.value
+                    response = last_message.content[0]
                     return response
             except Exception as e:
                 logging.error(f"An error occurred while retrieving the run: {e}")

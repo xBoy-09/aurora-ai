@@ -10,7 +10,7 @@ def create_user(
     full_name: str,
     disabled: bool,
 ) -> str:
-    user_record = auth.create_user(
+    user_record = auth.create_user(        
         email=email,
         email_verified=email_verified,
         password=password,
@@ -36,7 +36,7 @@ def update_password(firebase_uid: str, new_password: str):
     )
 
 
-def get_user(email: str) -> str:
+def get_user_email(email: str) -> str:
     user_record = auth.get_user_by_email(email=email)
 
     return user_record.uid

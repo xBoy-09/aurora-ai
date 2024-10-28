@@ -19,7 +19,7 @@ class AbstractFirebaseService(ABC):
         pass
 
     @abstractmethod
-    def get_user(self, email: str) -> str:
+    def get_user_email(self, email: str) -> str:
         pass
 
 
@@ -40,7 +40,7 @@ class FakeFirebaseService(AbstractFirebaseService):
     def update_password_and_name(self, firebase_uid: str, new_password: str, new_full_name: str)-> str:
         pass
 
-    def get_user(self, email: str) -> str:
+    def get_user_email(self, email: str) -> str:
         return ""
 
     def reset_password(self, firebase_uid: str, new_password: str) -> str:
@@ -73,5 +73,5 @@ class FirebaseService(AbstractFirebaseService):
             new_password=new_password,
         )
 
-    def get_user(self, email: str) -> str:
-        return fb_svc.get_user(email=email)
+    def get_user_email(self, email: str) -> str:
+        return fb_svc.get_user_email(email=email)
