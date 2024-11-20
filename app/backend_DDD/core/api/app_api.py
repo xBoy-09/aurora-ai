@@ -455,6 +455,29 @@ def get_thread_messages():
         ).__dict__
     
 
+
+@ai_app.route("/get-pdc-eateries", methods=["GET"])
+def get_pdc_eateries():
+    try:
+
+
+        eateries = database.get_pdc_eateries()
+
+        return utils.Response(
+            message="Gotten thread messages successfully",
+            status_code=200,
+            data= {
+                "messages": eateries,
+            },
+        ).__dict__
+    except Exception as e:
+        print(f'Error in get_thread_messages: {e}')
+        return utils.Response(
+            message=f"An error occurred in server",
+            status_code=500,
+        ).__dict__
+    
+
 @utils.require_admin(database=database)
 @utils.handle_missing_payload
 @utils.validate_and_sanitize_json_payload(

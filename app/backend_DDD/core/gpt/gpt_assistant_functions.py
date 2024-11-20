@@ -130,7 +130,7 @@ class GptAssistant:
 
         self.thread.delete_thread(thread_id=thread.id)
 
-        return response
+        return response.text.value
     
     def get_thread_id(self, user_id: str) -> str:
         thread = self.thread.create_thread()

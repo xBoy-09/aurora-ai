@@ -318,6 +318,65 @@ class DatabaseManager:
             print(f"Error adding thread {thread_id} for user {user_id}: {e}")
             self.conn.rollback()
 
+    def get_pdc_eateries(self):
+        """
+        Fetch all data from the database in three queries and format it into the original JSON-like dictionary structure.
+        Returns:
+            dict: Data structured as per the original JSON format.
+        """
+    
+        try:
+            # Fetch all eateries
+            self.cursor.execute("SELECT * FROM pdc_eateries")
+            eateries = self.cursor.fetchall()
+    
+            # Fetch all menu items
+            self.cursor.execute("SELECT * FROM pdc_menu_items")
+            menu_items = self.cursor.fetchall()
+    
+            # Fetch all prices
+            self.cursor.execute("SELECT * FROM pdc_menu_prices")
+            prices = self.cursor.fetchall()
+    
+            # Organize data
+            result = []
+            eatery_dict = {eatery[0]: {"name": eatery[1], "link": eatery[2], "menu": []} for eatery in eateries}
+            menu_item_dict = {}
+    
+            # Organize menu items under eateries
+            for item in menu_items:
+                item_id = item[0]
+                eatery_id = item[1]
+                item_data = {
+                    "name": item[2],
+                    "image_link": item[3],
+                    "price": {}
+                }
+                menu_item_dict[item_id] = item_data
+                eatery_dict[eatery_id]["menu"].append(item_data)
+    
+            # Organize prices under menu items
+            for price in prices:
+                menu_item_id = price[1]
+                price_type = price[2]
+                price_value = str(price[3]) if price[3] else ""
+                if menu_item_id in menu_item_dict:
+                    menu_item_dict[menu_item_id]["price"][price_type] = price_value
+    
+            # Convert to result format
+            for eatery in eatery_dict.values():
+                result.append({
+                    "eatery": eatery["name"],
+                    "link": eatery["link"],
+                    "menu": eatery["menu"]
+                })
+    
+            return result
+    
+        except Exception as e:
+            raise Exception(f"Error fetching or processing data: {e}")
+    
+    
 
 
     def close(self):
@@ -422,3 +481,8 @@ class Admin:
             print(f"Error inserting assistant: {e}")
             self.db_manager.conn.rollback()
             return None
+        
+
+
+
+
