@@ -77,9 +77,29 @@ CREATE TABLE IF NOT EXISTS user_threads (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+-- Create Eateries Table
+CREATE TABLE pdc_eateries (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    link TEXT NOT NULL
+);
+
+-- Create MenuItems Table
+CREATE TABLE pdc_menu_items (
+    id SERIAL PRIMARY KEY,
+    eatery_id INT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    image_link TEXT,
+    FOREIGN KEY (eatery_id) REFERENCES pdc_eateries (id)
+);
+
+-- Create Prices Table
+CREATE TABLE pdc_menu_prices (
+    id SERIAL PRIMARY KEY,
+    menu_item_id INT NOT NULL,
+    type VARCHAR(50) NOT NULL, -- 'Full', 'Half', 'Quarter'
+    price DECIMAL(10, 2),
+    FOREIGN KEY (menu_item_id) REFERENCES pdc_menu_items (id)
+);
 
 
-24100300@lums.edu.pk
-24020243@lums.edu.pk
-24090876@lums.edu.pk
-24110331@lums.edu.pk
