@@ -1,5 +1,6 @@
 from firebase_admin import exceptions, auth
 from app.backend_DDD.core.classes import authentication as auth_class
+from app.backend_DDD.core.scripts.pdc_extract_menu_script import start_extracting_pdc_menu
 from app.backend_DDD.core.database.database_api_queries import DatabaseManager as db_man
 
 
@@ -70,3 +71,11 @@ def get_user(
     user = db_man.get_user(user_id=uid)
     user["user_setup"] = db_man.get_user_setup(user_id=uid)
     return user
+
+def update_pdc_menu(
+        db_man: db_man
+):
+    pdc_menu_data = start_extracting_pdc_menu()
+
+    if pdc_menu_data:
+        db_man.scripts.update_pdc_menu(pdc_menu_data)

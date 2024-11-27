@@ -1,12 +1,14 @@
 import os
+import json
 import psycopg2
 import datetime
 from dotenv import load_dotenv, find_dotenv
+from app.backend_DDD.core.scripts import pdc_extract_menu_script as pdc_script
 
 load_dotenv(find_dotenv())
 
 class DatabaseManager:
-    def __init__(self, admin=None):
+    def __init__(self, admin=None, scripts=None):
         self.database_url = os.environ.get('HEROKU_POSTGRESQL_CYAN_URL')
         self.conn = None
         self.cursor = None
@@ -14,6 +16,7 @@ class DatabaseManager:
         self.connect()
         # Set the Admin instance after initialization
         self.admin = admin if admin else Admin(self)
+        self.scripts = scripts if scripts else Scripts(self)
 
     def connect(self):
         attempt = 0
@@ -385,6 +388,44 @@ class DatabaseManager:
         if self.conn:
             self.conn.close()
         print("Connection closed.")
+
+
+class Scripts:
+    def __init__(self, db_manager):
+        self.db_manager = db_manager  # Store the DatabaseManager instance for access
+        super().__init__()
+
+    def update_pdc_menu(self, pdc_menu_data: dict):
+        try:
+
+            pdc_script.clear_data(self.db_manager.cursor)
+
+            data = pdc_menu_data
+
+            # Insert eateries and their related data
+            for eatery in data:
+                eatery_id = pdc_script.insert_eatery(self.db_manager.cursor, eatery["eatery"], eatery["link"], eatery["image"])
+                # print(f"Inserted Eatery: {eatery['eatery']} with ID {eatery_id}")
+
+                # Insert menu items
+                for item in eatery["menu"]:
+                    menu_item_id = pdc_script.insert_menu_item(self.db_manager.cursor, eatery_id, item["name"], item["image_link"])
+                    # print(f"Inserted Menu Item: {item['name']} with ID {menu_item_id}")
+
+                    # Insert prices
+                    for price_type, price_value in item["price"].items():
+                        if price_value:  # Only insert non-empty prices
+                            pdc_script.insert_price(self.db_manager.cursor, menu_item_id, price_type, price_value)
+                            # print(f"Inserted Price: {price_type} - {price_value} for Menu Item ID {menu_item_id}")
+
+            # Commit the transaction
+            self.db_manager.conn.commit()
+            print("Data inserted successfully.")
+
+        except Exception as e:
+            print(f"Error while inserting data: {e}")
+            self.db_manager.conn.rollback()
+
 
 
 class Admin:

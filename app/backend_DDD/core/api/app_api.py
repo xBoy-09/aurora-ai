@@ -1,17 +1,23 @@
 import os
+import time
 import json
 import logging
+import schedule
+import threading
 import firebase_admin
 import concurrent.futures
+from datetime import datetime
 from firebase_admin import auth
 import app.backend_DDD.core.api.utils as utils
 import app.backend_DDD.core.api.schemas as schemas
 from flask import Blueprint, Flask, request, jsonify
+from app.backend_DDD.core.commands import auth_commands as auth_cmds
+from app.backend_DDD.core.classes import authentication as auth_class
+from app.backend_DDD.core.commands import admin_commands as admin_cmds
 from app.backend_DDD.core.gpt.gpt_assistant_functions import GptAssistant
 from app.backend_DDD.core.database.database_api_queries import DatabaseManager
-from app.backend_DDD.core.commands import auth_commands as auth_cmds
-from app.backend_DDD.core.commands import admin_commands as admin_cmds
-from app.backend_DDD.core.classes import authentication as auth_class
+
+
 
 
 
@@ -29,6 +35,8 @@ cred = firebase_admin.credentials.Certificate(json.loads(cred_json))
 # print(type(cred))
 firebase_admin.initialize_app(cred)
 # check if firebase_admin is initialized
+
+
 
 
 
