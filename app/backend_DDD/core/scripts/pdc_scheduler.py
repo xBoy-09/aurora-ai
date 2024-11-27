@@ -21,7 +21,6 @@ schedule.every().hour.at(":00").do(hourly_task)
 
 def run_schedule():
     while True:
-        print(f'Checking task at {datetime.now()}')
         schedule.run_pending()
         time.sleep(10)
 
