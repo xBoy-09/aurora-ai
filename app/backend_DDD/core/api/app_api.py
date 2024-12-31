@@ -475,7 +475,7 @@ def get_pdc_eateries():
             message="Gotten thread messages successfully",
             status_code=200,
             data= {
-                "messages": eateries,
+                "eateries": eateries,
             },
         ).__dict__
     except Exception as e:
