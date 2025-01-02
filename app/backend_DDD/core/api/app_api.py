@@ -467,10 +467,7 @@ def get_thread_messages():
 @ai_app.route("/get-pdc-eateries", methods=["GET"])
 def get_pdc_eateries():
     try:
-
-
         eateries = database.get_pdc_eateries()
-
         return utils.Response(
             message="Gotten thread messages successfully",
             status_code=200,

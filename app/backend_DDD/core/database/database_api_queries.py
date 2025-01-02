@@ -343,7 +343,7 @@ class DatabaseManager:
     
             # Organize data
             result = []
-            eatery_dict = {eatery[0]: {"name": eatery[1], "link": eatery[2], "menu": []} for eatery in eateries}
+            eatery_dict = {eatery[0]: {"name": eatery[1], "link": eatery[2], "image" : eatery[3],"menu": []} for eatery in eateries}
             menu_item_dict = {}
     
             # Organize menu items under eateries
@@ -371,6 +371,7 @@ class DatabaseManager:
                 result.append({
                     "eatery": eatery["name"],
                     "link": eatery["link"],
+                    "image_link" : eatery["image"],
                     "menu": eatery["menu"]
                 })
     
