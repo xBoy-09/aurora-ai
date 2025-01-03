@@ -332,14 +332,17 @@ class DatabaseManager:
             # Fetch all eateries
             self.cursor.execute("SELECT * FROM pdc_eateries")
             eateries = self.cursor.fetchall()
+
     
             # Fetch all menu items
             self.cursor.execute("SELECT * FROM pdc_menu_items")
             menu_items = self.cursor.fetchall()
+
     
             # Fetch all prices
             self.cursor.execute("SELECT * FROM pdc_menu_prices")
             prices = self.cursor.fetchall()
+
     
             # Organize data
             result = []

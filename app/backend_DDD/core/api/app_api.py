@@ -17,6 +17,12 @@ from app.backend_DDD.core.commands import admin_commands as admin_cmds
 from app.backend_DDD.core.gpt.gpt_assistant_functions import GptAssistant
 from app.backend_DDD.core.database.database_api_queries import DatabaseManager
 
+# Add this after your imports
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 
 
@@ -66,6 +72,7 @@ def test():
 )
 @ai_app.route("/create-user", methods=["POST"])
 def create_user():
+    logger.info("Endpoint Hit: /api/v1/create-user [POST]")
     try:
         req = request.get_json(force=True)
         email = req["email"]
@@ -107,6 +114,7 @@ def create_user():
 )
 @ai_app.route("/create-user-without-firebase", methods=["POST"])
 def create_user_without_firebase():
+    logger.info("Endpoint Hit: /api/v1/create-user-without-firebase [POST]")
     try:
         req = request.get_json(force=True)
         email = req["email"]
@@ -147,6 +155,7 @@ def create_user_without_firebase():
 )
 @ai_app.route("/get-user", methods=["POST"])
 def get_user():
+    logging.info("Endpoint Hit: /api/v1/get-user [POST]")
     try:
         req = request.get_json(force=True)
         uid = req["uid"]
@@ -177,6 +186,7 @@ def get_user():
 )
 @ai_app.route("/get-university-setup-data", methods=["GET"])
 def get_university_setup_data():
+    logging.info("Endpoint Hit: /api/v1/get-university-setup-data [GET]")
     try:
         
         #  Get user details
@@ -207,6 +217,7 @@ def get_university_setup_data():
 
 @ai_app.route("/skip-set-university-setup-data", methods=["POST"])
 def skip_set_university_setup_data():
+    logging.info("Endpoint Hit: /api/v1/skip-set-university-setup-data [POST]")
     try:
         req = request.get_json(force=True)
         user_id = req["user_id"]
@@ -244,6 +255,7 @@ def skip_set_university_setup_data():
 )
 @ai_app.route("/set-university-setup-data", methods=["POST"])
 def set_university_setup_data():
+    logging.info("Endpoint Hit: /api/v1/set-university-setup-data [POST]")
     try:
         req = request.get_json(force=True)
         user_id = req["user_id"]
@@ -287,6 +299,7 @@ def set_university_setup_data():
 )
 @ai_app.route("/gpt-public-query", methods=["POST"])
 def gpt_public_query():
+    logging.info("Endpoint Hit: /api/v1/gpt-public-query [POST]")
     try:
         query = request.get_json(force=True)["query"]
         thread_id = str(request.get_json(force=True)["thread_id"])
@@ -343,6 +356,7 @@ def gpt_public_query():
 )
 @ai_app.route("/get-thread-name", methods=["POST"])
 def get_thread_name():
+    logging.info("Endpoint Hit: /api/v1/get-thread-name [POST]")
     try:
         query = request.get_json(force=True)["query"]
         thread_id = request.get_json(force=True)["thread_id"]
@@ -367,6 +381,7 @@ def get_thread_name():
             status_code=200,
             data= {
                 "thread_name": thread_name,
+                "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             },
         ).__dict__
     except Exception as e:
@@ -384,6 +399,7 @@ def get_thread_name():
 )
 @ai_app.route("/get-user-threads", methods=["POST"])
 def get_user_threads():
+    logging.info("Endpoint Hit: /api/v1/get-user-threads [POST]")
     try:
         user_id = request.get_json(force=True)["user_id"]
 
@@ -413,6 +429,7 @@ def get_user_threads():
 )
 @ai_app.route("/add-user-thread", methods=["POST"])
 def add_user_thread():
+    logging.info("Endpoint Hit: /api/v1/add-user-thread [POST]")
     try:
         user_id = request.get_json(force=True)["user_id"]
         thread_id = request.get_json(force=True)["thread_id"]
@@ -440,6 +457,7 @@ def add_user_thread():
 )
 @ai_app.route("/get-thread-messages", methods=["POST"])
 def get_thread_messages():
+    logging.info("Endpoint Hit: /api/v1/get-thread-messages [POST]")
     try:
         user_id = request.get_json(force=True)["user_id"]
         thread_id = request.get_json(force=True)["thread_id"]
@@ -466,6 +484,7 @@ def get_thread_messages():
 
 @ai_app.route("/get-pdc-eateries", methods=["GET"])
 def get_pdc_eateries():
+    logging.info("Endpoint Hit: /api/v1/get-pdc-eateries [GET]")
     try:
         eateries = database.get_pdc_eateries()
         return utils.Response(
@@ -495,6 +514,7 @@ def get_pdc_eateries():
 )
 @ai_app_admin.route("/add-data-university", methods=["POST"])
 def get_thread_messages():
+    logging.info("Endpoint Hit: /api/v1/get-thread-messages [POST]")
     try:
         user_id = request.get_json(force=True)["user_id"]
         university_name = request.get_json(force=True)["university_name"]
@@ -530,6 +550,7 @@ def get_thread_messages():
 )
 @ai_app_admin.route("/get-universities", methods=["POST"])
 def get_universities():
+    logging.info("Endpoint Hit: /api/v1/get-universities [POST]")
     try:
         universities = database.admin.view_all_universities()
 
@@ -557,6 +578,7 @@ def get_universities():
 )
 @ai_app_admin.route("/delete-university", methods=["POST"])
 def delete_university():
+    logging.info("Endpoint Hit: /api/v1/delete-university [POST]")
     try:
         university_id = request.get_json(force=True)["university_id"]
 
@@ -586,6 +608,7 @@ def delete_university():
 )
 @ai_app_admin.route("/edit-university", methods=["POST"])
 def edit_university():
+    logging.info("Endpoint Hit: /api/v1/edit-university [POST]")
     try:
         university_id = request.get_json(force=True)["university_id"]
         university_name = request.get_json(force=True)["university_name"]
@@ -624,6 +647,7 @@ def edit_university():
 )
 @ai_app_admin.route("/add-school-data", methods=["POST"])
 def add_school_data():
+    logging.info("Endpoint Hit: /api/v1/add-school-data [POST]")
     try:
         university_id = request.get_json(force=True)["university_id"]
         majors_list = request.get_json(force=True)["majors_list"]
@@ -661,6 +685,7 @@ def add_school_data():
 )
 @ai_app_admin.route("/add-assistant", methods=["POST"])
 def add_assistant():
+    logging.info("Endpoint Hit: /api/v1/add-assistant [POST]")
     try:
         user_id = request.get_json(force=True)["user_id"]
         assistant_id = request.get_json(force=True)["assistant_id"]
@@ -692,6 +717,7 @@ def add_assistant():
 )
 @ai_app_admin.route("/get-assistants", methods=["POST"])
 def get_assistants():
+    logging.info("Endpoint Hit: /api/v1/get-assistants [POST]")
     try:
         assistants = admin_cmds.get_assistants(
             db=database,
@@ -722,6 +748,7 @@ def get_assistants():
 )
 @ai_app_admin.route("/get-users", methods=["POST"])
 def get_users():
+    logging.info("Endpoint Hit: /api/v1/get-users [POST]")
     try:
         users = admin_cmds.get_users(
             db=database,
@@ -752,6 +779,7 @@ def get_users():
 )
 @ai_app_admin.route("/get-user-details", methods=["POST"])
 def get_user_details():
+    logging.info("Endpoint Hit: /api/v1/get-user-details [POST]")
     try:
         user_id = request.get_json(force=True)["user_id_for_details"]
 
