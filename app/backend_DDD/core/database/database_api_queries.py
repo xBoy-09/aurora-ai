@@ -332,17 +332,14 @@ class DatabaseManager:
             # Fetch all eateries
             self.cursor.execute("SELECT * FROM pdc_eateries")
             eateries = self.cursor.fetchall()
-
     
             # Fetch all menu items
             self.cursor.execute("SELECT * FROM pdc_menu_items")
             menu_items = self.cursor.fetchall()
 
-    
             # Fetch all prices
             self.cursor.execute("SELECT * FROM pdc_menu_prices")
             prices = self.cursor.fetchall()
-
     
             # Organize data
             result = []
@@ -382,6 +379,39 @@ class DatabaseManager:
     
         except Exception as e:
             raise Exception(f"Error fetching or processing data: {e}")
+        
+
+        
+    def get_feedback_types(self):
+        try:
+            # Update the query to match your new table and columns
+            self.cursor.execute("""
+                SELECT
+                    type_id,
+                    type_name,
+                    type_front,
+                    type_description
+                FROM feedback_types;
+            """)
+            rows = self.cursor.fetchall()
+
+            # Build a list of dictionaries, one dictionary per row
+            feedback_types = []
+            for row in rows:
+                feedback_types.append({
+                    'type_id': row[0],
+                    'type_name': row[1],
+                    'type_front': row[2],
+                    'type_description': row[3]
+                })
+
+            # Return a single dictionary containing the list of feedback types
+            return {'feedback_types': feedback_types}
+        except Exception as e:
+            print(f"Error retrieving feedback types: {e}")
+            # Return an empty dict if there's an error
+            return {}
+
     
     
 

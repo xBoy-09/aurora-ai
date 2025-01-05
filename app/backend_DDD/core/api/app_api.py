@@ -495,7 +495,25 @@ def get_pdc_eateries():
             },
         ).__dict__
     except Exception as e:
-        print(f'Error in get_thread_messages: {e}')
+        print(f'Error in get_pdc_eateries: {e}')
+        return utils.Response(
+            message=f"An error occurred in server",
+            status_code=500,
+        ).__dict__
+    
+
+@ai_app.route("/get-feedback-types", methods=["GET"])
+def get_feedback_types():
+    logging.info("Endpoint Hit: /api/v1/get-feedback-types [GET]")
+    try:
+        types = database.get_feedback_types()
+        return utils.Response(
+            message="Gotten feedback types successfully",
+            status_code=200,
+            data= types,
+        ).__dict__
+    except Exception as e:
+        print(f'Error in get_feedback_types: {e}')
         return utils.Response(
             message=f"An error occurred in server",
             status_code=500,

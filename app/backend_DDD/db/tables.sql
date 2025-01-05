@@ -102,4 +102,11 @@ CREATE TABLE pdc_menu_prices (
     FOREIGN KEY (menu_item_id) REFERENCES pdc_menu_items (id)
 );
 
+CREATE TABLE feedback_types (
+    type_id SERIAL PRIMARY KEY,
+    type_name VARCHAR(100) NOT NULL,
+    type_front VARCHAR(100),
+    type_description TEXT
+);
+
 
