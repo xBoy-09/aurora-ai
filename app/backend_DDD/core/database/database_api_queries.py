@@ -499,7 +499,7 @@ class Admin:
             return []
 
     def view_all_universities(self):
-        sql_select_all_universities = "SELECT university_id, university_name FROM universities;"
+        sql_select_all_universities = "SELECT university_id, university_name FROM university;"
         try:
             self.db_manager.cursor.execute(sql_select_all_universities)
             universities = self.db_manager.cursor.fetchall()
