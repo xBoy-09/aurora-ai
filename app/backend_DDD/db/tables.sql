@@ -102,6 +102,7 @@ CREATE TABLE pdc_menu_prices (
     FOREIGN KEY (menu_item_id) REFERENCES pdc_menu_items (id)
 );
 
+-- Create feedback_types table
 CREATE TABLE feedback_types (
     type_id SERIAL PRIMARY KEY,
     type_name VARCHAR(100) NOT NULL,
@@ -109,4 +110,35 @@ CREATE TABLE feedback_types (
     type_description TEXT
 );
 
+
+--
+CREATE TABLE feedback (
+    feedback_id SERIAL PRIMARY KEY,
+    user_id VARCHAR(100) NOT NULL, -- Always collected
+    feedback_type_id INT NOT NULL,
+    feedback_title TEXT NOT NULL,
+    feedback_text TEXT NOT NULL,
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_resolved BOOLEAN DEFAULT FALSE,
+    resolved_at TIMESTAMP,
+    resolved_by VARCHAR(100),
+    
+    -- Feature-specific fields (for feature feedback)
+    feature_name feature_name_enum DEFAULT 'General',
+    
+    -- Chat-specific fields (for chat feedback)
+    thread_id VARCHAR(100),
+    message_id VARCHAR(100),
+    
+    -- Priority and status (mainly for feature feedback)
+    priority priority_enum DEFAULT 'Low',
+    status status_enum DEFAULT 'Open',
+    admin_comment TEXT,
+    
+    -- Foreign key constraints
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (feedback_type_id) REFERENCES feedback_types(type_id),
+    FOREIGN KEY (resolved_by) REFERENCES users(user_id),
+    FOREIGN KEY (thread_id) REFERENCES user_threads(thread_id)
+);
 

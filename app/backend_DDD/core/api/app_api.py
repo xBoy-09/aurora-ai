@@ -13,7 +13,6 @@ import app.backend_DDD.core.api.schemas as schemas
 from flask import Blueprint, Flask, request, jsonify
 from app.backend_DDD.core.commands import auth_commands as auth_cmds
 from app.backend_DDD.core.classes import authentication as auth_class
-from app.backend_DDD.core.commands import admin_commands as admin_cmds
 from app.backend_DDD.core.gpt.gpt_assistant_functions import GptAssistant
 from app.backend_DDD.core.database.database_api_queries import DatabaseManager
 
@@ -32,7 +31,6 @@ app = Flask(__name__)
 
 # Create the Blueprint
 ai_app = Blueprint("ai_app", __name__, url_prefix="/api/v1")
-ai_app_admin = Blueprint("ai_app_admin", __name__, url_prefix="/api/v1/admin")
 gpt_assistant = GptAssistant()
 database = DatabaseManager()
 # cred = firebase_admin.credentials.Certificate("app/backend_DDD/core/api/credentials-dev.json")
@@ -166,6 +164,7 @@ def get_user():
             db_man=database,   
         )
 
+        print(f'create_user return successfully : {user}')
         return utils.Response(
             message= f"User fetched successfully",
             status_code=200,
@@ -520,314 +519,89 @@ def get_feedback_types():
         ).__dict__
     
 
-@utils.require_admin(database=database)
 @utils.handle_missing_payload
 @utils.validate_and_sanitize_json_payload(
     required_parameters={
         "user_id": schemas.QuerySchema,
-        "university_name": schemas.QuerySchema,
-        "email_regex": schemas.QuerySchema,
-        "assistant_id": schemas.QuerySchema,
+        "feedback_type_id": schemas.QuerySchema,
+        "feedback_title": schemas.QuerySchema,
+        "feedback_text": schemas.QuerySchema,
+        "feature_name": schemas.QuerySchema,
     }
 )
-@ai_app_admin.route("/add-data-university", methods=["POST"])
-def get_thread_messages():
-    logging.info("Endpoint Hit: /api/v1/get-thread-messages [POST]")
+@ai_app.route("/submit-feedback", methods=["POST"])
+def submit_feedback():
+    logging.info("Endpoint Hit: /api/v1/submit-feedback [POST]")
     try:
         user_id = request.get_json(force=True)["user_id"]
-        university_name = request.get_json(force=True)["university_name"]
-        email_regex = request.get_json(force=True)["email_regex"]
-        assistant_id = request.get_json(force=True)["assistant_id"]
+        feedback_type_id = request.get_json(force=True)["feedback_type_id"]
+        feedback_title = request.get_json(force=True)["feedback_title"]
+        feedback_text = request.get_json(force=True)["feedback_text"]
 
-        # Add data to the university table
-        database.admin.add_university(
-            university_name=university_name,
-            email_regex=email_regex,
-            assistant_id=assistant_id,
-        )
+        thread_id = ''
+        message_id = ''
 
-        return utils.Response(
-            message="Data added successfully",
-            status_code=200,
-        ).__dict__
-    except Exception as e:
-        print(f'Error in get_thread_messages: {e}')
-        return utils.Response(
-            message=f"An error occurred in server",
-            status_code=500,
-        ).__dict__
+        if(feature_name == FeatureName.CHAT):
+            thread_id = request.get_json(force=True)["thread_id"]
+            message_id = request.get_json(force=True)["message_id"]
 
-
-
-@utils.require_admin(database=database)
-@utils.handle_missing_payload
-@utils.validate_and_sanitize_json_payload(
-    required_parameters={
-        "user_id": schemas.QuerySchema,
-    }
-)
-@ai_app_admin.route("/get-universities", methods=["POST"])
-def get_universities():
-    logging.info("Endpoint Hit: /api/v1/get-universities [POST]")
-    try:
-        universities = database.admin.view_all_universities()
-
-        return utils.Response(
-            message="Gotten universities successfully",
-            status_code=200,
-            data= {
-                "universities": universities,
-            },
-        ).__dict__
-    except Exception as e:
-        print(f'Error in get_universities: {e}')
-        return utils.Response(
-            message=f"An error occurred in server",
-            status_code=500,
-        ).__dict__
-
-
-@utils.require_admin(database=database)
-@utils.handle_missing_payload
-@utils.validate_and_sanitize_json_payload(
-    required_parameters={
-        "user_id": schemas.QuerySchema,
-    }
-)
-@ai_app_admin.route("/delete-university", methods=["POST"])
-def delete_university():
-    logging.info("Endpoint Hit: /api/v1/delete-university [POST]")
-    try:
-        university_id = request.get_json(force=True)["university_id"]
-
-        # Delete university
-        database.admin.delete_university(university_id=university_id)
-
-        return utils.Response(
-            message="University deleted successfully",
-            status_code=200,
-        ).__dict__
-    except Exception as e:
-        print(f'Error in delete_university: {e}')
-        return utils.Response(
-            message=f"An error occurred in server",
-            status_code=500,
-        ).__dict__
-
-@utils.require_admin(database=database)
-@utils.handle_missing_payload
-@utils.validate_and_sanitize_json_payload(
-    required_parameters={
-        "user_id": schemas.QuerySchema,
-        "university_name": schemas.QuerySchema,
-        "email_regex": schemas.QuerySchema,
-        "assistant_id": schemas.QuerySchema,
-    }
-)
-@ai_app_admin.route("/edit-university", methods=["POST"])
-def edit_university():
-    logging.info("Endpoint Hit: /api/v1/edit-university [POST]")
-    try:
-        university_id = request.get_json(force=True)["university_id"]
-        university_name = request.get_json(force=True)["university_name"]
-        email_regex = request.get_json(force=True)["email_regex"]
-        assistant_id = request.get_json(force=True)["assistant_id"]
-
-        # Edit university
-        database.admin.edit_university(
-            university_id=university_id,
-            university_name=university_name,
-            email_regex=email_regex,
-            assistant_id=assistant_id,
-        )
-
-        return utils.Response(
-            message="University edited successfully",
-            status_code=200,
-        ).__dict__
-    except Exception as e:
-        print(f'Error in edit_university: {e}')
-        return utils.Response(
-            message=f"An error occurred in server",
-            status_code=500,
-        ).__dict__
-
-@utils.require_admin(database=database)
-@utils.handle_missing_payload
-@utils.validate_and_sanitize_json_payload(
-    required_parameters={
-        "user_id": schemas.QuerySchema,
-        "university_id": schemas.QuerySchema,
-        "majors_list": list[str],
-        "school_name": schemas.QuerySchema,
-        "school_name_abv": schemas.QuerySchema,
-    }
-)
-@ai_app_admin.route("/add-school-data", methods=["POST"])
-def add_school_data():
-    logging.info("Endpoint Hit: /api/v1/add-school-data [POST]")
-    try:
-        university_id = request.get_json(force=True)["university_id"]
-        majors_list = request.get_json(force=True)["majors_list"]
-        school_name = request.get_json(force=True)["school_name"]
-        school_name_abv = request.get_json(force=True)["school_name_abv"]
-
-        # Add school data
-        database.admin.add_school_data(
-            university_id=university_id,
-            majors_list=majors_list,
-            school_name=school_name,
-            school_name_abv=school_name_abv,
-        )
-
-        return utils.Response(
-            message="School data added successfully",
-            status_code=200,
-        ).__dict__
-    except Exception as e:
-        print(f'Error in add_school_data: {e}')
-        return utils.Response(
-            message=f"An error occurred in server",
-            status_code=500,
-        ).__dict__
-
-# add asistant
-@utils.require_admin(database=database)
-@utils.handle_missing_payload
-@utils.validate_and_sanitize_json_payload(
-    required_parameters={
-        "user_id": schemas.QuerySchema,
-        "assistant_id": schemas.QuerySchema,
-        "assistant_name": schemas.QuerySchema,
-    }
-)
-@ai_app_admin.route("/add-assistant", methods=["POST"])
-def add_assistant():
-    logging.info("Endpoint Hit: /api/v1/add-assistant [POST]")
-    try:
-        user_id = request.get_json(force=True)["user_id"]
-        assistant_id = request.get_json(force=True)["assistant_id"]
-        assistant_name = request.get_json(force=True)["assistant_name"]
-
-        # Add assistant
-        database.admin.add_assistant(
-            assistant_id=assistant_id,
-            assistant_name=assistant_name,
+    
+        
+        database.submit_feedback(
+            user_id=user_id,
+            feedback_type_id=feedback_type_id,
+            feedback_title=feedback_title,
+            feedback_text=feedback_text,
+            thread_id=thread_id,
+            message_id=message_id,
         )
         
         return utils.Response(
-            message="Assistant added successfully",
+            message="Feedback submitted successfully",
             status_code=200,
         ).__dict__
     except Exception as e:
-        print(f'Error in add_assistant: {e}')
+        print(f'Error in submit_feedback: {e}')
         return utils.Response(
             message=f"An error occurred in server",
             status_code=500,
         ).__dict__
-    
-@utils.require_admin(database=database)
+
+
+# Get user feedback
 @utils.handle_missing_payload
 @utils.validate_and_sanitize_json_payload(
     required_parameters={
         "user_id": schemas.QuerySchema,
     }
 )
-@ai_app_admin.route("/get-assistants", methods=["POST"])
-def get_assistants():
-    logging.info("Endpoint Hit: /api/v1/get-assistants [POST]")
+@ai_app.route("/get-user-feedback", methods=["POST"])
+def get_user_feedback():
+    logging.info("Endpoint Hit: /api/v1/get-user-feedback [POST]")
     try:
-        assistants = admin_cmds.get_assistants(
-            db=database,
-            gpt=gpt_assistant,
-        )
-
+        user_id = request.get_json(force=True)["user_id"]
+        feedback = database.get_user_feedback(user_id=user_id)
         return utils.Response(
-            message="Gotten assistants successfully",
+            message="Gotten user feedback successfully",
             status_code=200,
-            data= {
-                "assistants": assistants,
-            },
+            data= feedback,
         ).__dict__
     except Exception as e:
-        print(f'Error in get_assistants: {e}')
+        print(f'Error in get_user_feedback: {e}')
         return utils.Response(
             message=f"An error occurred in server",
             status_code=500,
         ).__dict__
     
-
-@utils.require_admin(database=database)
-@utils.handle_missing_payload
-@utils.validate_and_sanitize_json_payload(
-    required_parameters={
-        "user_id": schemas.QuerySchema,
-    }
-)
-@ai_app_admin.route("/get-users", methods=["POST"])
-def get_users():
-    logging.info("Endpoint Hit: /api/v1/get-users [POST]")
-    try:
-        users = admin_cmds.get_users(
-            db=database,
-        )
-
-        return utils.Response(
-            message="Gotten users successfully",
-            status_code=200,
-            data= {
-                "users": users,
-            },
-        ).__dict__
-    except Exception as e:
-        print(f'Error in get_users: {e}')
-        return utils.Response(
-            message=f"An error occurred in server",
-            status_code=500,
-        ).__dict__
-    
-
-@utils.require_admin(database=database)
-@utils.handle_missing_payload
-@utils.validate_and_sanitize_json_payload(
-    required_parameters={
-        "user_id": schemas.QuerySchema,
-        "user_id_for_details": schemas.QuerySchema,
-    }
-)
-@ai_app_admin.route("/get-user-details", methods=["POST"])
-def get_user_details():
-    logging.info("Endpoint Hit: /api/v1/get-user-details [POST]")
-    try:
-        user_id = request.get_json(force=True)["user_id_for_details"]
-
-        # TODO: Implementation left
-        user = admin_cmds.get_user_details(
-            db=database,
-            user_id=user_id,
-        )
-
-        return utils.Response(
-            message="Gotten user details successfully",
-            status_code=200,
-            data= {
-                "user": user,
-            },
-        ).__dict__
-    except Exception as e:
-        print(f'Error in get_user_details: {e}')
-        return utils.Response(
-            message=f"An error occurred in server",
-            status_code=500,
-        ).__dict__    
-
-
 
 # Register the Blueprint with the Flask app
 app.register_blueprint(ai_app)
+
+# Import and register admin blueprint
+from app.backend_DDD.core.api.admin_api import ai_app_admin
 app.register_blueprint(ai_app_admin)
 
 if __name__ == '__main__':
-    # port = int(os.environ.get('PORT', 5000))  # Fallback to 5000 if PORT isn't set
-    # app.run(host='0.0.0.0', port=port, debug=False)
-    app.run()
+    port = int(os.environ.get('PORT', 8000))  
+    app.run(host='0.0.0.0', port=port, debug=False)
+    # app.run()

@@ -13,3 +13,4 @@ ALTER COLUMN affiliate_type TYPE affiliate_type_enum USING affiliate_type::text:
 ALTER TABLE affiliate_details
 ADD CONSTRAINT fk_university_id
 FOREIGN KEY (university_id) REFERENCES university(university_id);
+

@@ -143,8 +143,28 @@ class DatabaseManager:
         except Exception as e:
             print(f"Error inserting thread ID: {e}")
             self.conn.rollback()
+
+
+    def submit_feedback(self, user_id: str, feedback_type_id: str, feedback_title: str, feedback_text: str, thread_id: str, message_id: str):
+        sql_insert = """INSERT INTO feedback (user_id, feedback_type_id, feedback_title, feedback_text, thread_id, message_id) VALUES (%s, %s, %s, %s, %s, %s);"""
+        try:
+            self.cursor.execute(sql_insert, (user_id, feedback_type_id, feedback_title, feedback_text, thread_id, message_id))
+            self.conn.commit()
+            print(f"Feedback submitted for user {user_id}.")
+        except Exception as e:
+            print(f"Error submitting feedback: {e}")
+            self.conn.rollback()
         
         
+    def get_user_feedback(self, user_id: str):
+        sql_select = """SELECT * FROM feedback WHERE user_id = %s;"""
+        try:
+            self.cursor.execute(sql_select, (user_id,))
+            feedback = self.cursor.fetchall()
+            return feedback
+        except Exception as e:
+            print(f"Error getting user feedback: {e}")
+            return []
 
     def get_university_setup(self):
         setup = {}
@@ -556,7 +576,41 @@ class Admin:
             print(f"Error inserting assistant: {e}")
             self.db_manager.conn.rollback()
             return None
-        
+    
+    def get_all_feedback(self):
+        sql_select_all_feedback = "SELECT * FROM feedback;"
+        try:
+            self.db_manager.cursor.execute(sql_select_all_feedback)
+            feedback = self.db_manager.cursor.fetchall()
+            return feedback
+        except Exception as e:
+            print(f"Error retrieving feedback: {e}")
+            return []
+
+
+    def change_feedback_status(self, feedback_id: int, status: str):
+        sql_update_feedback_status = "UPDATE feedback SET status = %s WHERE feedback_id = %s;"
+        try:
+            self.db_manager.cursor.execute(sql_update_feedback_status, (status, feedback_id))
+            self.db_manager.conn.commit()
+            print(f"Feedback {feedback_id} status updated to {status}.")
+        except Exception as e:
+            print(f"Error updating feedback status: {e}")
+            self.db_manager.conn.rollback()
+            return False
+        return True
+
+    def add_comment_to_feedback(self, feedback_id: int, comment: str):
+        sql_update_feedback_comment = "UPDATE feedback SET admin_comment = %s WHERE feedback_id = %s;"
+        try:
+            self.db_manager.cursor.execute(sql_update_feedback_comment, (comment, feedback_id))
+            self.db_manager.conn.commit()
+            print(f"Comment added to feedback {feedback_id}.")
+        except Exception as e:
+            print(f"Error adding comment to feedback: {e}")
+            self.db_manager.conn.rollback()
+            return False
+        return True
 
 
 
