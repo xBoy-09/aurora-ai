@@ -37,27 +37,24 @@ gpt_assistant = GptAssistant()
 database = DatabaseManager()
 # cred = firebase_admin.credentials.Certificate("app/backend_DDD/core/api/credentials-dev.json")
 cred_json_str = os.environ.get('FIREBASE_CREDENTIALS')
-# cred_json = json.loads(cred_json_str)
-# print(f"cred_json: {type(cred_json)}")
-# print(f"cred_json_str: {type(cred_json_str)}")
-# print(f"cred_json_dump: {type(json.dumps(cred_json))}")
-# print(f"cred_json_dump_str: {type(json.dumps(cred_json_str))}")
+cred_json = json.loads(cred_json_str)
+cred = firebase_admin.credentials.Certificate(cred_json)
 
-cred = firebase_admin.credentials.Certificate(
-    {
-  "type": "service_account",
-  "project_id": os.environ.get('FIREBASE_PROJECT_ID'),
-  "private_key_id": os.environ.get('FIREBASE_PRIVATE_KEY_ID'),
-  "private_key": os.environ.get('FIREBASE_PRIVATE_KEY'),
-  "client_email": os.environ.get('FIREBASE_CLIENT_EMAIL'),
-  "client_id": os.environ.get('FIREBASE_CLIENT_ID'),
-  "auth_uri": os.environ.get('FIREBASE_AUTH_URI'),
-  "token_uri": os.environ.get('FIREBASE_TOKEN_URI'),
-  "auth_provider_x509_cert_url": os.environ.get('FIREBASE_AUTH_PROVIDER'),
-  "client_x509_cert_url": os.environ.get('FIREBASE_X509_CERT_URL'),
-  "universe_domain": os.environ.get('FIREBASE_UNI_DOMAIN')
-    }
-)
+# cred = firebase_admin.credentials.Certificate(
+#     {
+#   "type": "service_account",
+#   "project_id": os.environ.get('FIREBASE_PROJECT_ID'),
+#   "private_key_id": os.environ.get('FIREBASE_PRIVATE_KEY_ID'),
+#   "private_key": os.environ.get('FIREBASE_PRIVATE_KEY'),
+#   "client_email": os.environ.get('FIREBASE_CLIENT_EMAIL'),
+#   "client_id": os.environ.get('FIREBASE_CLIENT_ID'),
+#   "auth_uri": os.environ.get('FIREBASE_AUTH_URI'),
+#   "token_uri": os.environ.get('FIREBASE_TOKEN_URI'),
+#   "auth_provider_x509_cert_url": os.environ.get('FIREBASE_AUTH_PROVIDER'),
+#   "client_x509_cert_url": os.environ.get('FIREBASE_X509_CERT_URL'),
+#   "universe_domain": os.environ.get('FIREBASE_UNI_DOMAIN')
+#     }
+# )
 # print(type(cred))
 firebase_admin.initialize_app(cred)
 # check if firebase_admin is initialized
