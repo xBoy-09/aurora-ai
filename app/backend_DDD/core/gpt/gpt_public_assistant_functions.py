@@ -11,6 +11,7 @@ from dotenv import load_dotenv, find_dotenv
 # load_dotenv()
 
 api_key = os.getenv("OPENAI_API_KEY")
+print(api_key+"12")
 client = openai.OpenAI(api_key=api_key)
 
 model = "gpt-4o-mini"
