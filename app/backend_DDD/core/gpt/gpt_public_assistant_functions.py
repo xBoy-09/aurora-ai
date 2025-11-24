@@ -1,15 +1,18 @@
 import time
 import json
 import openai
+import os
 import logging
 from datetime import datetime
 from app.backend_DDD.core.gpt.helper_variables import *
 from app.backend_DDD.core.gpt.gpt_tool_functions import GptToolFunctions
 from dotenv import load_dotenv, find_dotenv
 
-load_dotenv()
+# load_dotenv()
 
-client = openai.OpenAI()
+api_key = os.getenv("OPENAI_API_KEY")
+client = openai.OpenAI(api_key=api_key)
+
 model = "gpt-4o-mini"
 
 
