@@ -36,8 +36,11 @@ ai_app_admin = Blueprint("ai_app_admin", __name__, url_prefix="/api/v1/admin")
 gpt_assistant = GptAssistant()
 database = DatabaseManager()
 # cred = firebase_admin.credentials.Certificate("app/backend_DDD/core/api/credentials-dev.json")
-cred_json = os.environ.get('FIREBASE_CREDENTIALS')
-cred = firebase_admin.credentials.Certificate(json.loads(cred_json))
+cred_json_str = os.environ.get('FIREBASE_CREDENTIALS')
+cred_json = json.loads(cred_json_str)
+print(f"cred_json: {type(cred_json)}")
+
+cred = firebase_admin.credentials.Certificate(cred_json)
 # print(type(cred))
 firebase_admin.initialize_app(cred)
 # check if firebase_admin is initialized
