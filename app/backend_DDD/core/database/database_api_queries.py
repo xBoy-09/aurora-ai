@@ -22,7 +22,6 @@ class DatabaseManager:
         attempt = 0
         while attempt < self.retryConnect:
             try:
-                print(self.database_url)
                 self.conn = psycopg2.connect(self.database_url, connect_timeout=10)
                 self.cursor = self.conn.cursor()
                 print("Connection successful.")
